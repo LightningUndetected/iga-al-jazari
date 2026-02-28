@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Al-Jazari – Father of Robotics</title>
+<link rel="icon" href="al-jazari-chatbot.png" type="image/png" sizes="any">
+<style>
+:root {
+  --bg: linear-gradient(to bottom, #0f766e, #0f172a);
+  --card: rgba(15, 23, 42, 0.75);
+  --accent: #059669;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  position: relative;
+}
+section { padding: 5rem 10vw; }
+h1, h2, h3 { font-weight: 700; letter-spacing: 0.02em; }
+.hero {
+  min-height: 75vh;
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+  background: rgba(15,118,110,0.15);
+}
+.hero h1 {
+  font-size: clamp(3.6rem, 6vw, 5.5rem);
+  margin-bottom: 1.2rem;
+}
+.hero p {
+  max-width: 900px;
+  font-size: 1.55rem;
+  line-height: 1.7;
+  margin: 0 auto;
+}
+.section-title { font-size: 3rem; margin-bottom: 2.5rem; color: var(--accent); text-shadow: 1px 1px 6px rgba(0,0,0,0.5); }
+.section-text { max-width: 1000px; line-height: 1.7; color: var(--text); margin-bottom: 1.5rem; font-size: 1.15rem; }
+.timeline-container { overflow-x: auto; padding: 5rem 0 3rem; }
+.timeline { position: relative; display: flex; align-items: flex-start; gap: 7rem; min-width: max-content; padding: 2rem 2rem 4rem; }
+.timeline::before { content: ""; position: absolute; top: 2.5rem; left: 0; right: 0; height: 4px; background: rgba(255,255,255,0.15); }
+.timeline-item { position: relative; width: 320px; }
+.timeline-dot { width: 24px; height: 24px; background: var(--accent); border-radius: 50%; position: absolute; top: 2rem; left: 50%; transform: translateX(-50%); box-shadow: 0 0 0 10px rgba(5,150,105,0.3); transition: transform 0.3s; }
+.timeline-card { background: var(--card); margin-top: 6rem; padding: 2.5rem; border-radius: 25px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(12px); transition: transform 0.5s, box-shadow 0.5s; }
+.timeline-card:hover { transform: translateY(-12px); box-shadow: 0 18px 50px rgba(5,150,105,0.25); }
+.timeline-year { color: var(--accent); font-weight: 700; margin-bottom: 1rem; font-size: 1.3rem; }
+.timeline-card p { font-size: 1.05rem; line-height: 1.7; color: var(--text); }
+.legacy { display: grid; gap: 3.5rem; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+.legacy-card { background: var(--card); padding: 3rem; border-radius: 30px; border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(15px); transition: transform 0.4s; }
+.legacy-card:hover { transform: translateY(-10px); }
+.legacy-card h3 { margin-bottom: 1rem; color: var(--accent); font-size: 1.5rem; }
+.legacy-card p { color: var(--text); line-height: 1.8; font-size: 1.1rem; }
+footer { text-align: center; padding: 5rem 1rem 4rem; color: var(--muted); font-size: 1.15rem; background: rgba(0,0,0,0.7); }
+.nav-section { padding: 0.8rem 0 1.2rem; background: linear-gradient(to bottom, rgba(15,118,110,0.3), rgba(15,23,42,0)); backdrop-filter: blur(8px); }
+.nav-bar { display: flex; justify-content: center; gap: 2.8rem; padding: 1.2rem 2rem; background: rgba(15,23,42,0.65); border-radius: 20px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); }
+.nav-bar a { color: var(--accent); font-size: 1.25rem; font-weight: 700; text-decoration: none; letter-spacing: 0.05em; position: relative; }
+.nav-bar a::after { content: ""; position: absolute; left: 0; bottom: -6px; width: 0%; height: 3px; background: var(--accent); transition: width 0.3s; }
+.nav-bar a:hover::after { width: 100%; }
+.reveal { opacity: 0; transform: translateY(60px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.visible { opacity: 1; transform: none; }
+.reveal img:hover { transform: scale(1.05); transition: transform 0.4s ease; }
+/* CHATBOT STYLES */
+.chat-trigger {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  border: 5px solid var(--accent);
+  box-shadow: 0 8px 30px rgba(5,150,105,0.4);
+  cursor: pointer;
+  z-index: 99999 !important;
+  transition: all 0.3s ease;
+  background: white;
+}
+.chat-trigger:hover { transform: scale(1.14) rotate(8deg); }
+#chat-window {
+  position: fixed;
+  bottom: 130px;
+  right: 30px;
+  width: 380px;
+  height: 560px;
+  background: rgba(255,255,255,0.96);
+  border-radius: 22px;
+  box-shadow: 0 12px 50px rgba(0,0,0,0.4);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  z-index: 99999 !important;
+}
+#chat-header {
+  background: linear-gradient(90deg, #059669, #10b981);
+  color: #111827;
+  padding: 16px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.15rem;
+}
+#chat-header img {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+#chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  background: #f9fafb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.message {
+  max-width: 84%;
+  padding: 11px 15px;
+  border-radius: 22px;
+  line-height: 1.45;
+  animation: fadeInUp 0.35s ease-out;
+}
+.bot-message {
+  background: #ecfdf5;
+  color: #064e3b;
+  align-self: flex-start;
+  border-bottom-left-radius: 6px;
+}
+.user-message {
+  background: #3b82f6;
+  color: white;
+  align-self: flex-end;
+  border-bottom-right-radius: 6px;
+}
+#chat-input {
+  display: flex;
+  padding: 14px;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+}
+#chat-input input {
+  flex: 1;
+  padding: 11px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
+  margin-right: 10px;
+}
+#chat-input button {
+  padding: 11px 20px;
+  background: var(--accent);
+  color: #111827;
+  border: none;
+  border-radius: 9999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+/* ────────────────────────────────────────────────
+   Tablet & mid-width fixes: Prevent cut-off on Asus tabs / Nest Hub
+───────────────────────────────────────────────── */
+
+/* Target tablets & smart displays (common 768–1100 px widths) */
+@media (max-width: 1100px) {
+  .nav-section {
+    padding: 0.6rem 3vw;               /* less side padding to give nav more room */
+  }
+
+  .nav-bar {
+    flex-wrap: wrap !important;        /* force multi-row on tablets */
+    gap: 1.2rem 2rem;                  /* generous gap for readability */
+    padding: 1rem 1.5rem;
+    justify-content: center;           /* center even when wrapping */
+    align-items: center;
+    background: rgba(15, 23, 42, 0.95) !important; /* solid background – no bleed-through */
+    border-radius: 18px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+  }
+
+  .nav-bar a {
+    font-size: clamp(1rem, 2.8vw, 1.15rem); /* responsive, never too small */
+    padding: 0.6rem 1.2rem;
+    min-width: 80px;                    /* prevent ultra-squeeze */
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* Stronger horizontal scroll fallback for edge cases */
+  .nav-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) rgba(255,255,255,0.1);
+  }
+
+  .nav-bar::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .nav-bar::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 3px;
+  }
+
+  .nav-bar::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+  }
+}
+
+/* Phones & very narrow (keep previous mobile rules, but override if needed) */
+@media (max-width: 768px) {
+  .nav-bar {
+    gap: 1rem 1.6rem;
+    padding: 0.9rem 1.2rem;
+  }
+
+  .nav-bar a {
+    font-size: clamp(0.95rem, 3.5vw, 1.05rem);
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Ensure no outer clipping */
+.nav-section,
+.nav-bar {
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow: hidden;                    /* prevent any bleed */
+}
+</style>
+</head>
+<body>
+
+<section class="reveal hero">
+  <div>
+    <h1>Ismail Al-Jazari</h1>
+    <p>Badiʿ al-Zamān Abū al-ʿIzz Ismāʿīl ibn al-Razzāz al-Jazarī (1136–1206), the 12th-century Muslim polymath, mechanical engineer, and artist whose Book of Knowledge of Ingenious Mechanical Devices laid the foundations of modern robotics, automation, and mechanical engineering.</p>
+  </div>
+</section>
+
+<section class="reveal nav-section">
+  <nav class="nav-bar">
+    <a href="#origins">Origins</a>
+    <a href="#historical-context">Historical Context</a>
+    <a href="#mindset">Mindset</a>
+    <a href="#contributions">Contributions</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#masterpieces">Masterpieces</a>
+    <a href="#legacy">Legacy</a>
+    <a href="#resources">Resources</a>
+  </nav>
+</section>
+
+<section class="reveal" id="origins">
+  <h2 class="section-title">Identity & Origins</h2>
+  <p class="section-text reveal">
+    <img src="jazira_region.png" alt="Jazira Region Map" style="width:100%; max-width:550px; height:400px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+  <p class="section-text">Al-Jazari was born in 1136 CE in the Jazira region of Upper Mesopotamia (modern-day Cizre/Diyarbakır area, Turkey/Syria border). Little is known of his early life or family beyond his own brief notes in his famous book. He served as chief mechanical engineer at the Artuqid court in Diyarbakır for 25 years, where he designed and built extraordinary devices for the palace and city.</p>
+</section>
+
+<section class="reveal" id="historical-context">
+  <h2 class="section-title">Historical Context: The World During Al-Jazari's Lifetime</h2>
+  <p class="section-text">The 12th century saw dynamic shifts in the later Islamic Golden Age: crusades, empire changes, and intellectual vibrancy. Globally, Europe had the High Middle Ages (Gothic cathedrals, universities). In Asia, Song China advanced gunpowder/printing, and Khmer built Angkor Wat. Al-Jazari lived in Upper Mesopotamia under the Artuqid dynasty (vassals of Zengids/Ayyubids) in a fragmented but culturally rich Muslim world.</p>
+
+  <p class="section-text reveal">
+    <img src="turkey_12century_map.webp" alt="Map of Muslim Empires in the 12th Century" style="width:100%; max-width:800px; height:500px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>Before His Birth (Pre-1136):</strong> After the "Shia Century" (where the Buyids and Fatimids were dominant), Sunni revival came under Seljuk Turks (defeated Buyids in 1055, built the Great Seljuk Empire). The First Crusade (1096–1099) created Christian states in the Levant.</p>
+
+  <p class="section-text"><strong>During His Lifetime (1136–1206):</strong> Al-Jazari served the Artuqids amid fragmentation. Major powers at the time: Abbasid Caliphate (Baghdad), Ayyubid Sultanate (Egypt/Syria under Salahuddin after 1171), Almohad Caliphate (North Africa/Spain), Sultanate of Rum (Anatolia), Ghurids (India/Afghanistan), rising Khwarazmians (Central Asia/Persia). Great Seljuk Empire collapsed in 1194 (when Toghrul III was defeated by Khwarazmian Ala al-Din Tekish). Durind the 1190s, Caliph al-Nasir li-Din Allah partially revived Abbasid influence in Iraq and western Iran — this was the Sunni resurgence in Baghdad during Al-Jazari’s later years. Key points: Saladin recapturing Jerusalem (1187) and the Abbasid revival under al-Nasir li-Din Allah.</p>
+
+  <p class="section-text"><strong>Al-Andalus (Islamic Spain):</strong> Under Almohad rule (mid-12th century onward), cities like Córdoba, Seville, and Granada remained learning centers despite Reconquista pressure. Great Mosque of Córdoba endured as a symbol; the Almohads built iconic minarets (e.g., Giralda in Seville). Scholars like Ibn Rushd worked here before moving to Marrakesh.</p>
+
+  <p class="section-text reveal">
+    <img src="cordoba_mosque.jpg" alt="Interior of the Great Mosque of Córdoba" style="width:100%; max-width:800px; height:500px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>After His Death (Post-1206):</strong> Seljuk remnants faded; Mongols under Genghis Khan (from 1206) conquered, sacking Baghdad (1258) under last caliph al-Musta'sim—ending classical Golden Age.</p>
+
+  <p class="section-text reveal">
+    <img src="salahuddin_pic.jpg" alt="Salahuddin (Saladin)" style="width:100%; max-width:600px; height:400px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>Contemporaries & Scholars:</strong> Ibn Rushd (Averroes) in philosophy/medicine, Al-Idrisi in cartography, Ibn Arabi in Sufism, Hibat Allah al-Baghdaadi in optics. Leaders like Saladin unified against Crusaders.</p>
+
+  <p class="section-text"><strong>Other Achievements of the Time:</strong> Refined astrolabes, creating surgical tools, cartography, optics, and architecture (Almohad minarets, mosques)—fostering knowledge exchange and setting the stage for Al-Jazari’s work.</p>
+</section>
+
+<section class="reveal" id="contributions">
+  <h2 class="section-title">Scientific Contributions & The Book</h2>
+  <p class="section-text">Al-Jazari’s legacy rests on <strong><i>Kitab fi ma'rifat al-hiyal al-handasiya</i> (The Book of Knowledge of Ingenious Mechanical Devices)</strong> (1206 CE), his only surviving work. It details over 50 original machines (some sources count up to 100 variations) across six categories, with precise instructions, illustrations, and explanations. He improved on ancient Greek, Persian, and Indian designs while introducing groundbreaking mechanisms like the camshaft, crankshaft, segmental gears, and programmable control systems.</p>
+
+  <p class="section-text">The book is divided into six categories:</p>
+  <ul style="max-width:1000px; line-height:1.7; color:var(--text); margin-bottom:1.5rem; font-size:1.15rem; padding-left:2rem;">
+    <li><strong>I. Clocks</strong> (10 devices) – Water and candle-powered timekeepers with automata.</li>
+    <li><strong>II. Vessels & Figures for Drinking Sessions</strong> (10 devices) – Trick automata for serving wine/water entertainingly.</li>
+    <li><strong>III. Pitchers, Basins & Phlebotomy Devices</strong> (10 devices) – Automated washing and bloodletting tools.</li>
+    <li><strong>IV. Fountains & Perpetual Flutes</strong> (10 devices) – Changing fountains and continuous musical automata.</li>
+    <li><strong>V. Water-Raising Machines</strong> (5 devices) – Advanced pumps and wheels for irrigation.</li>
+    <li><strong>VI. Miscellaneous</strong> (5 devices) – Locks, doors, and measuring tools.</li>
+  </ul>
+
+  <p class="section-text"><strong>Key Individual Inventions:</strong></p>
+
+  <p class="section-text"><strong>Elephant Clock</strong> (Category I) — Monumental water clock with seasonal hour adjustment, zodiac display, humanoid striking cymbals every half-hour, chirping bird, and moving dragons—blending art, astronomy, and automation.</p>
+
+  <p class="section-text"><strong>Castle Clock</strong> (Category I) — Over 3.5 m tall astronomical water clock showing time, zodiac, musicians playing at set hours, doors opening, and automata figures signaling events.</p>
+
+  <p class="section-text"><strong>Double-Action Reciprocating Suction Pump</strong> (Category V) — Twin-cylinder pump with valves for continuous water lift; featured the first known crank-connecting rod mechanism converting rotary to linear motion efficiently.</p>
+  <p class="section-text reveal">
+    <img src="jazari_water_pump.jpg" alt="Al-Jazari Double-Action Suction Pump" style="width:100%; max-width:550px; height:400px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>Hand-Washing Servant Automaton</strong> (Category III) — Humanoid robot that pours water, dispenses soap, and offers a towel automatically—often called the world's first true robot for hygiene.</p>
+  <p class="section-text reveal">
+    <img src="jazari_hand_washing.jpg" alt="Hand-Washing Automaton" style="width:100%; max-width:360px; height:600px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>Programmable Drum Machine</strong> (Category IV) — Camshaft with interchangeable pegs controlling rhythms on drums—earliest known programmable automaton, allowing different melodies to be "programmed."</p>
+
+  <p class="section-text"><strong>Musical Boat Automaton</strong> (Category II) — Floating boat with female figures playing instruments (flutes, drums) via hydraulic power and cams—entertained during drinking parties.</p>
+  <p class="section-text reveal">
+    <img src="boat_automation.png" alt="Musical Boat Automation" style="width:100%; max-width:600px; height:400px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>Peacock Fountain / Pitcher</strong> (Category IV / II) — Automated peacock-shaped vessel that refills itself and dispenses water/wine with moving tail and head—trick device for banquets.</p>
+
+  <p class="section-text"><strong>Combination Lock Chest (Sundūq)</strong> (Category VI) — Secure chest with four rotating dials creating billions of combinations—early advanced mechanical lock for valuables.</p>
+  <p class="section-text reveal">
+    <img src="lock_combination.webp" alt="Musical Boat Automation" style="width:100%; max-width:600px; height:400px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+
+  <p class="section-text"><strong>Perpetual Flute with Tipping Buckets</strong> (Category IV) — Self-playing flute using tipping buckets and siphons for continuous melody without refilling—demonstrated precise timing and flow control.</p>
+
+  <p class="section-text">These inventions advanced hydraulics, automation, feedback control, and programmability. Al-Jazari emphasized beauty, reliability, and replicability—his detailed drawings enabled future builders. His camshafts, crankshafts, and automata prefigured modern robotics, CNC machines, and industrial automation by centuries.</p>
+</section>
+
+<section class="reveal" id="timeline">
+  <h2 class="section-title">Timeline of Achievements</h2>
+  <div class="timeline-container">
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">1136 CE</div>
+          <p>Birth in the Jazira region, Upper Mesopotamia.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">1174–1181 CE</div>
+          <p>Begins 25-year service as chief engineer to the Artuqid rulers in Diyarbakır.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">1198–1206 CE</div>
+          <p>Designs and builds dozens of machines; compiles his lifetime work into The Book of Knowledge of Ingenious Mechanical Devices.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-year">January 1206 CE</div>
+          <p>Completes and presents the illustrated book to King Nasir al-Din; dies shortly afterward in Diyarbakır.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal" id="masterpieces">
+  <h2 class="section-title">Masterpieces: The Elephant Clock & Birth of Robotics</h2>
+  <p class="section-text">Al-Jazari’s most celebrated creation is the <strong>Elephant Clock</strong> — a monumental water clock blending Indian, African, Chinese, and Arab artistic elements. A hidden tank drives a floating bowl that triggers a humanoid figure to strike a cymbal every half-hour, a mechanical bird to chirp, and dragons to move. It also displays the zodiac and temporal hours that adjust for seasons.</p>
+  <video autoplay muted loop class="reveal" style="max-width:520px; width:100%; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4); height: 400px;">
+    <source src="elephant_clock_animation.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+  <div style="text-align: center; margin: 1rem auto; font-size: 0.95rem; color: #cbd5e1; max-width: 520px;">
+  Video credit: 
+  <a href="https://www.youtube.com/watch?v=MCW_wp0dgF4" 
+     target="_blank" 
+     rel="noopener noreferrer"
+     style="color: var(--accent); text-decoration: none; font-weight: 600;">
+    1001 Inventions – "Animation of Al-Jazari's Elephant Clock (1001 Inventions)"
+  </a><br>
+  See full explanation and animation there →
+</div>
+<br>
+  <p class="section-text">Another groundbreaking invention: the <strong>programmable drum machine</strong> — the world’s first known programmable robot. Pegs on a revolving camshaft controlled drum rhythms, allowing different melodies to be “programmed.” His humanoid servant automaton (hand-washing robot) is often called the first true robot in history.</p>
+  <p class="section-text">Through these devices Al-Jazari demonstrated programmable control, feedback mechanisms, and human-like automata centuries before the European Renaissance.</p>
+  <p class="section-text reveal">
+    <img src="elephant_clock_manuscript.png" alt="Elephant Clock Manuscript" style="width:100%; max-width:600px; height:600px; display:block; margin:2rem auto; border-radius:15px; box-shadow:0 8px 30px rgba(0,0,0,0.4);">
+  </p>
+</section>
+
+<section class="reveal" id="legacy">
+  <h2 class="section-title">Legacy & Influence</h2>
+  <div class="legacy">
+    <div class="legacy-card">
+      <h3>Leonardo da Vinci & European Engineers</h3>
+      <p>His automata and mechanical principles reached Europe through translations and trade, influencing Renaissance inventors including Leonardo da Vinci’s robot designs.</p>
+    </div>
+    <div class="legacy-card">
+      <h3>Modern Robotics & Engineering</h3>
+      <p>Recognized today as the Father of Robotics. His camshaft, crank mechanisms, and programmable automata directly prefigure modern automation, CNC machines, and industrial robots.</p>
+    </div>
+  </div>
+</section>
+
+<section class="reveal" id="resources">
+  <h2 class="section-title">Further Resources</h2>
+  <h4 style="font-size:2rem; margin-bottom:2.5rem; color:var(--accent); text-shadow:1px 1px 4px rgba(0,0,0,0.4);">YouTube Videos</h4>
+  <div style="display:flex; flex-wrap:wrap; gap:2rem;">
+    <div style="flex:1 1 300px; text-align:center; background:var(--card); padding:1rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <a href="https://www.youtube.com/watch?v=3m63jOhd21s" target="_blank" style="text-decoration:none; color:var(--accent);">
+        <img src="https://img.youtube.com/vi/3m63jOhd21s/0.jpg" alt="Elephant Clock" style="width:100%; border-radius:12px;">
+        <p style="margin-top:0.5rem;">Al Jazari || The Father Of Robotics || Grand Engineer || Golden Age!!</p>
+      </a>
+    </div>
+    <div style="flex:1 1 300px; text-align:center; background:var(--card); padding:1rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <a href="https://www.youtube.com/watch?v=ac0LGaFt59Q" target="_blank" style="text-decoration:none; color:var(--accent);">
+        <img src="https://img.youtube.com/vi/ac0LGaFt59Q/0.jpg" alt="Video 2" style="width:100%; border-radius:12px;">
+        <p style="margin-top:0.5rem;">Ismail al-Jazari and Medieval robots?</p>
+      </a>
+    </div>
+    <div style="flex:1 1 300px; text-align:center; background:var(--card); padding:1rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <a href="https://www.youtube.com/watch?v=e8X63dSee1E" target="_blank" style="text-decoration:none; color:var(--accent);">
+        <img src="https://img.youtube.com/vi/e8X63dSee1E/0.jpg" alt="Video 3" style="width:100%; border-radius:12px;">
+        <p style="margin-top:0.5rem;">Al - Jazari: The Master of Engineer and Father of Robotics | The World's First Programmer</p>
+      </a>
+    </div>
+    <div style="flex:1 1 300px; text-align:center; background:var(--card); padding:1rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <a href="https://www.youtube.com/watch?v=jfhYoaNu1rY" target="_blank" style="text-decoration:none; color:var(--accent);">
+        <img src="https://img.youtube.com/vi/jfhYoaNu1rY/0.jpg" alt="Video 4" style="width:100%; border-radius:12px;">
+        <p style="margin-top:0.5rem;">Al-Jazari: The Genius Who Built Robots 800 Years Before Tesla | The Forgotten Father of Robotics</p>
+      </a>
+    </div>
+  </div>
+
+  <h4 style="font-size:2rem; margin:4rem 0 2.5rem; color:var(--accent); text-shadow:1px 1px 4px rgba(0,0,0,0.4);">Informational Articles</h4>
+  <div style="display:flex; flex-wrap:wrap; gap:2rem;">
+    <div style="flex:1 1 300px; background:var(--card); padding:1.5rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <h5 style="font-size:1.2rem; color:var(--accent); margin-bottom:0.8rem;">Wikipedia – Al-Jazari</h5>
+      <p style="line-height:1.6; color:var(--text);">Detailed encyclopedia entry on his life, inventions and historical context.</p>
+      <a href="https://en.wikipedia.org/wiki/Ismail_al-Jazari" target="_blank" style="color:var(--accent); font-weight:700; margin-top:0.5rem; display:inline-block;">Read more</a>
+    </div>
+    <div style="flex:1 1 300px; background:var(--card); padding:1.5rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <h5 style="font-size:1.2rem; color:var(--accent); margin-bottom:0.8rem;">1001 Inventions – Al-Jazari</h5>
+      <p style="line-height:1.6; color:var(--text);">Educational overview of his constructions (with some lego!).</p>
+      <a href="https://aljazaribook.com/en/2018/10/31/building-in-lego_en/" target="_blank" style="color:var(--accent); font-weight:700; margin-top:0.5rem; display:inline-block;">Read more</a>
+    </div>
+    <div style="flex:1 1 300px; background:var(--card); padding:1.5rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <h5 style="font-size:1.2rem; color:var(--accent); margin-bottom:0.8rem;">Muslim Heritage – Al-Jazari's Machines</h5>
+      <p style="line-height:1.6; color:var(--text);">In-depth scholarly article on his mechanical contributions.</p>
+      <a href="https://www.researchgate.net/publication/396046002_The_Ingenious_Legacy_of_Al-Jazari_A_Systematic_Analysis_of_His_Mechanical_Devices_and_Their_Impact_on_Modern_Engineering" target="_blank" style="color:var(--accent); font-weight:700; margin-top:0.5rem; display:inline-block;">Read more</a>
+    </div>
+    <div style="flex:1 1 300px; background:var(--card); padding:1.5rem; border-radius:15px; border:1px solid rgba(255,255,255,0.1);">
+      <h5 style="font-size:1.2rem; color:var(--accent); margin-bottom:0.8rem;">Father of Robotics – Modern View</h5>
+      <p style="line-height:1.6; color:var(--text);">How Al-Jazari's work connects to today's robotics and automation.</p>
+      <a href="https://www.muslimpro.com/ismail-al-jazari-the-muslim-engineer/" target="_blank" style="color:var(--accent); font-weight:700; margin-top:0.5rem; display:inline-block;">Read more</a>
+    </div>
+  </div>
+</section>
+
+<footer style="background:rgba(0,0,0,0.7); margin-top:4rem;">
+  <p style="margin-bottom:1rem; font-size:1.2rem;">© 2026 Ibrahim Khan</p>
+  <p style="margin-bottom:0.5rem;">Celebrating Innovation of the Islamic Golden Age</p>
+  <p style="font-size:0.95rem; color:#94a3b8;">Educational project on Al-Jazari — Father of Robotics</p>
+</footer>
+
+<!-- CHATBOT HTML -->
+<div class="chat-trigger" id="chat-trigger">
+  <img src="al-jazari-chatbot.webp" alt="Al-Jazari" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">
+</div>
+<div id="chat-window">
+  <div id="chat-header">
+    <img src="al-jazari-chatbot.webp" alt="Al-Jazari">
+    Al-Jazari – Master Engineer
+  </div>
+  <div id="chat-messages"></div>
+  <div id="chat-input">
+    <input type="text" id="user-input" placeholder="Ask me anything about my machines... ⚙️">
+    <button id="send-button">Send</button>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const timelineContainer = document.querySelector('.timeline-container');
+  if (timelineContainer) {
+    timelineContainer.addEventListener('wheel', e => {
+      e.preventDefault();
+      timelineContainer.scrollLeft += e.deltaY;
+    });
+  }
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.15 });
+  reveals.forEach(r => observer.observe(r));
+
+  const chatTrigger = document.getElementById('chat-trigger');
+  const chatWindow = document.getElementById('chat-window');
+  const chatMessages = document.getElementById('chat-messages');
+  const userInput = document.getElementById('user-input');
+  const sendButton = document.getElementById('send-button');
+
+  const sectionMap = {
+    origins: { id: "origins", title: "my origins & service at the Artuqid court" },
+    mindset: { id: "mindset", title: "my engineering mindset & approach" },
+    contributions: { id: "contributions", title: "my book and inventions" },
+    timeline: { id: "timeline", title: "timeline of my life & work" },
+    masterpieces: { id: "masterpieces", title: "my Elephant Clock & programmable automata" },
+    legacy: { id: "legacy", title: "my legacy in robotics" },
+    resources: { id: "resources", title: "further resources about me" }
+  };
+
+  function detectIntent(msg) {
+    const t = msg.toLowerCase().trim();
+    if (t.includes('origin') || t.includes('born') || t.includes('where') || t.includes('diyarbakir') || t.includes('jazira')) return { type: 'navigate', section: 'origins' };
+    if (t.includes('mindset') || t.includes('think') || t.includes('why') || t.includes('approach') || t.includes('draw')) return { type: 'navigate', section: 'mindset' };
+    if (t.includes('invention') || t.includes('contribution') || t.includes('book') || t.includes('pump') || t.includes('clock') || t.includes('automata')) return { type: 'navigate', section: 'contributions' };
+    if (t.includes('timeline') || t.includes('when') || t.includes('year') || t.includes('die') || t.includes('died')) return { type: 'navigate', section: 'timeline' };
+    if (t.includes('elephant') || t.includes('robot') || t.includes('programmable') || t.includes('masterpiece') || t.includes('automata') || t.includes('hand washing')) return { type: 'navigate', section: 'masterpieces' };
+    if (t.includes('legacy') || t.includes('influence') || t.includes('da vinci') || t.includes('robotics')) return { type: 'navigate', section: 'legacy' };
+    if (t.includes('resource') || t.includes('video') || t.includes('watch') || t.includes('read')) return { type: 'navigate', section: 'resources' };
+    return { type: 'unknown' };
+  }
+
+  function scrollToSection(sectionId) {
+    const el = document.getElementById(sectionId);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  const PROXY_URL = "https://al-jazari-groq-chat-proxy.ibrahimkhanpolymath.workers.dev";
+
+  const SYSTEM_PROMPT = `You are Al-Jazari, 12th-century Muslim master engineer and Father of Robotics.
+Full name: Badiʿ al-Zamān Abū al-ʿIzz Ismāʿīl ibn al-Razzāz al-Jazarī
+Lifespan: 1136–1206 CE, Jazira region, served Artuqid court in Diyarbakır
+Famous for: The Book of Knowledge of Ingenious Mechanical Devices (1206) describing 50+ machines
+Key inventions: Elephant Clock, Castle Clock, programmable drum automata (first programmable robot), hand-washing servant robot, crank-connecting rod, double-action pumps, camshafts, fountains, musical automata.
+STRICT INSTRUCTIONS YOU MUST OBEY EVERY TIME:
+- Replies MUST be SHORT: 30–60 words MAXIMUM (2–3 short sentences only).
+- Be concise, wise, humble, educational. Use warm Islamic tone when natural.
+- Answer ONLY about your life, book, machines, engineering, or Islamic Golden Age.
+- If question unrelated: redirect gently in 1 sentence.
+- NEVER exceed 60 words — cut ruthlessly.`;
+
+  async function queryGroq(userMessage) {
+    try {
+      const response = await fetch(PROXY_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          model: "llama-3.1-8b-instant",
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: userMessage }
+          ],
+          max_tokens: 120,
+          temperature: 0.55,
+          top_p: 0.8
+        })
+      });
+
+      if (!response.ok) throw new Error(`Proxy error: ${response.status}`);
+
+      const data = await response.json();
+      return data.choices?.[0]?.message?.content?.trim() || "I am pondering the gears of your question...";
+    } catch (err) {
+      console.error("Chat error:", err);
+      return "Forgive me, the water wheels of knowledge turn slowly today... Ask again? ⚙️";
+    }
+  }
+
+  function addMessage(sender, text) {
+    const div = document.createElement('div');
+    div.className = `message ${sender === 'bot' ? 'bot-message' : 'user-message'}`;
+    div.textContent = text;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  if (chatTrigger && chatWindow) {
+    chatTrigger.addEventListener('click', () => {
+      const isOpen = chatWindow.style.display === 'flex';
+      chatWindow.style.display = isOpen ? 'none' : 'flex';
+      if (!isOpen) {
+        userInput?.focus();
+        if (!chatMessages.hasChildNodes()) {
+          addMessage('bot', 'السلام عليكم ورحمة الله!\nI am Al-Jazari, master of ingenious devices.\nHow may this humble engineer assist your curiosity today? ⚙️');
+        }
+      }
+    });
+  }
+
+  async function sendMessage() {
+    if (!userInput) return;
+    const text = userInput.value.trim();
+    if (!text) return;
+
+    addMessage('user', text);
+    userInput.value = '';
+
+    const typing = document.createElement('div');
+    typing.className = 'message bot-message';
+    typing.innerHTML = '<em>Al-Jazari is turning the gears...</em>';
+    chatMessages.appendChild(typing);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    const intent = detectIntent(text);
+    if (intent.type === 'navigate') {
+      const sec = sectionMap[intent.section];
+      if (sec) {
+        addMessage('bot', `Let me show you the section about ${sec.title}… (Scrolling now ⚙️)`);
+        setTimeout(() => scrollToSection(sec.id), 900);
+      }
+    }
+
+    const reply = await queryGroq(text);
+    typing.remove();
+    addMessage('bot', reply);
+  }
+
+  if (sendButton) sendButton.addEventListener('click', sendMessage);
+  if (userInput) {
+    userInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  }
+});
+</script>
+</body>
+</html>
